@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+option csharp_namespace = "GrpcService1";
+
+package calculate;
+
+service Calculator {
+	// Does a calculation
+	rpc DoCalculation (CalculationRequest) returns (CalculationResponse);
+}
+
+message CalculationRequest {
+	enum CalculationType {
+		ADD = 0;
+		SUBTRACT = 1;
+		POWER = 2;
+	}
+	CalculationType calculation_type = 1;
+	repeated double parameters = 2;
+}
+
+message CalculationResponse {
+	string message = 1;
+}
