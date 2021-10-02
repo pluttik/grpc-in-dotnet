@@ -5,8 +5,14 @@ option csharp_namespace = "GrpcService1";
 package calculate;
 
 service Calculator {
-	// Does a calculation
+	// example of a remote procedure call without streaming, does a calculation
 	rpc DoCalculation (CalculationRequest) returns (CalculationResponse);
+
+	// example of a remote procedure call that is server-side streaming, does a streaming prime decomposition
+	rpc DecomposePrime (PrimeDecompositionRequest) returns (stream PrimeDecompositionResponse);
+
+	// example of a remote procedure call that is client-side, calculates average
+	rpc Average (stream .calculate.AverageRequest) returns (.calculate.AverageResponse);
 }
 
 message CalculationRequest {
@@ -21,4 +27,20 @@ message CalculationRequest {
 
 message CalculationResponse {
 	string message = 1;
+}
+
+message PrimeDecompositionRequest {
+	int32 number = 1;
+}
+
+message PrimeDecompositionResponse {
+	int32 prime_factor = 1;
+}
+
+message AverageRequest {
+	int32 number = 1;
+}
+
+message AverageResponse {
+	double average = 1;
 }

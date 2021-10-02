@@ -5,7 +5,14 @@ option csharp_namespace = "GrpcService1";
 package greet;
 
 service Greeter {
-  rpc SayHello (HelloRequest) returns (HelloReply);
+  // example of a remote procedure call without streaming
+  rpc SayHello (HelloRequest) returns (HelloReply){}
+
+  // example of a remote procedure call that is server-side streaming 
+  rpc SayHelloManyTimes (HelloManyTimesRequest) returns (stream HelloManyTimesReply){}
+
+  // example of a remote procedure call that is client-side streaming
+  rpc SayLongHello (stream LongHelloRequest) returns (LongHelloReply){}
 }
 
 message HelloRequest {
@@ -14,4 +21,20 @@ message HelloRequest {
 
 message HelloReply {
   string message = 1;
+}
+
+message HelloManyTimesRequest {
+	string name = 1;
+}
+
+message HelloManyTimesReply {
+	string message = 1;
+}
+
+message LongHelloRequest {
+	string name = 1;
+}
+
+message LongHelloReply {
+	string message = 1;
 }
