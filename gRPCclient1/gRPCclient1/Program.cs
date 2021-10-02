@@ -9,21 +9,24 @@ using GrpcService1;
 namespace GreetAndCalculate
 {
     // A command line application.
-    internal class Program
+    public class Program
     {
-        internal static async Task Main()
+        public static async Task Main(string[] args)
         {
+            IGetUserInput getUserInput = new GetUserInput();
+            IGreetAndCalculateService greetAndCalculateService = new GreetAndCalculateService(getUserInput);
+
             // The port number(5001) must match the port of the gRPC server.
             using var channel = GrpcChannel.ForAddress("https://localhost:5001");
             
-            var serviceChoice = GreetAndCalculateService.AskServiceChoice();
+            var serviceChoice = greetAndCalculateService.AskServiceChoice();
 
             switch (serviceChoice)
             {
                 // greetings
                 case "1":
                 {
-                    var greeterClient = GreetAndCalculateService.StartGreeterClient(channel, out var name);
+                    var greeterClient = greetAndCalculateService.StartGreeterClient(channel, out var name);
                     HelloReply reply = await greeterClient.SayHelloAsync(
                         new HelloRequest { Name = name });
                     Console.WriteLine("Greeting: " + reply.Message);
@@ -32,7 +35,7 @@ namespace GreetAndCalculate
                 }
                 case "2":
                 {
-                    var greeterClient = GreetAndCalculateService.StartGreeterClient(channel, out var name);
+                    var greeterClient = greetAndCalculateService.StartGreeterClient(channel, out var name);
                     var reply = greeterClient.SayHelloManyTimes(new HelloManyTimesRequest() {Name = name});
 
                     while (await reply.ResponseStream.MoveNext())
@@ -44,7 +47,7 @@ namespace GreetAndCalculate
                 }
                 case "3":
                 {
-                    var greeterClient = GreetAndCalculateService.StartGreeterClient(channel, out var name);
+                    var greeterClient = greetAndCalculateService.StartGreeterClient(channel, out var name);
                     var request = new LongHelloRequest() { Name = name };
                     var stream = greeterClient.SayLongHello();
 
@@ -63,7 +66,7 @@ namespace GreetAndCalculate
                 {
                     var calculatorClient = new Calculator.CalculatorClient(channel);
 
-                    var request = GreetAndCalculateService.GetCalculationRequest();
+                    var request = greetAndCalculateService.GetCalculationRequest();
 
                     CalculationResponse calculationResponse = await calculatorClient.DoCalculationAsync(request);
                     Console.WriteLine(calculationResponse.Message);
@@ -90,7 +93,7 @@ namespace GreetAndCalculate
                     var calculatorClient = new Calculator.CalculatorClient(channel);
                     var stream = calculatorClient.Average();
 
-                    await GreetAndCalculateService.AskNumbersAndStreamAsync(stream);
+                    await greetAndCalculateService.AskNumbersAndStreamAsync(stream);
 
                     await stream.RequestStream.CompleteAsync();
                     var response = stream.ResponseAsync;

@@ -7,9 +7,16 @@ using System.Threading.Tasks;
 
 namespace GreetAndCalculate
 {
-    public static class GreetAndCalculateService
+    public class GreetAndCalculateService : IGreetAndCalculateService
     {
-        public static string AskServiceChoice()
+        private IGetUserInput _getUserInput;
+
+        public GreetAndCalculateService(IGetUserInput getUserInput)
+        {
+            _getUserInput = getUserInput;
+        }
+
+        public string AskServiceChoice()
         {
             var serviceChoice = string.Empty;
             var possibleChoices = new HashSet<string>() { "1", "2", "3", "4", "5", "6" };
@@ -21,7 +28,7 @@ namespace GreetAndCalculate
                               "the calculation service (4), " +
                               "streaming prime decomposition (5) " +
                               "or calculate an average (6)? ");
-                serviceChoice = Console.ReadLine();
+                serviceChoice = _getUserInput.GetInput();
                 if (!possibleChoices.Contains(serviceChoice))
                 {
                     Console.WriteLine("Please use a valid option.");
@@ -30,7 +37,7 @@ namespace GreetAndCalculate
             return serviceChoice;
         }
 
-        public static Greeter.GreeterClient StartGreeterClient(GrpcChannel channel, out string name)
+        public Greeter.GreeterClient StartGreeterClient(GrpcChannel channel, out string name)
         {
             var client1 = new Greeter.GreeterClient(channel);
             Console.Write("Please enter your name: ");
@@ -38,7 +45,7 @@ namespace GreetAndCalculate
             return client1;
         }
 
-        public static CalculationRequest GetCalculationRequest()
+        public CalculationRequest GetCalculationRequest()
         {
             Console.Write("Add (1), subtract (2) or power (3)? ");
             string answer = Console.ReadLine();
@@ -82,7 +89,7 @@ namespace GreetAndCalculate
             return request;
         }
 
-        public static async Task AskNumbersAndStreamAsync(AsyncClientStreamingCall<AverageRequest, AverageResponse> stream)
+        public async Task AskNumbersAndStreamAsync(AsyncClientStreamingCall<AverageRequest, AverageResponse> stream)
         {
             Console.Write("Enter some numbers separated by commas: ");
             var input = Console.ReadLine();

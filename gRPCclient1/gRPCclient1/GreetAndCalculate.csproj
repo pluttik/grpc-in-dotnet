@@ -22,9 +22,5 @@
 	  <Protobuf Include="Protos\calculate.proto" GrpcServices="Client" />
 	  <Protobuf Include="Protos\greet.proto" GrpcServices="Client" />
   </ItemGroup>
-	
-  <ItemGroup>
-    <Folder Include="Services\" />
-  </ItemGroup>
 
 </Project>
