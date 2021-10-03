@@ -26,7 +26,9 @@ namespace GreetAndCalculate
                 // greetings
                 case "1":
                 {
-                    var greeterClient = greetAndCalculateService.StartGreeterClient(channel, out var name);
+                    var greeterClient = new Greeter.GreeterClient(channel);
+                    Console.Write("Please enter your name: ");
+                    var name = getUserInput.GetInput();
                     HelloReply reply = await greeterClient.SayHelloAsync(
                         new HelloRequest { Name = name });
                     Console.WriteLine("Greeting: " + reply.Message);
@@ -35,7 +37,9 @@ namespace GreetAndCalculate
                 }
                 case "2":
                 {
-                    var greeterClient = greetAndCalculateService.StartGreeterClient(channel, out var name);
+                    var greeterClient = new Greeter.GreeterClient(channel);
+                    Console.Write("Please enter your name: ");
+                    var name = getUserInput.GetInput();
                     var reply = greeterClient.SayHelloManyTimes(new HelloManyTimesRequest() {Name = name});
 
                     while (await reply.ResponseStream.MoveNext())
@@ -47,7 +51,9 @@ namespace GreetAndCalculate
                 }
                 case "3":
                 {
-                    var greeterClient = greetAndCalculateService.StartGreeterClient(channel, out var name);
+                    var greeterClient = new Greeter.GreeterClient(channel);
+                    Console.Write("Please enter your name: ");
+                    var name = getUserInput.GetInput();
                     var request = new LongHelloRequest() { Name = name };
                     var stream = greeterClient.SayLongHello();
 
@@ -93,7 +99,12 @@ namespace GreetAndCalculate
                     var calculatorClient = new Calculator.CalculatorClient(channel);
                     var stream = calculatorClient.Average();
 
-                    await greetAndCalculateService.AskNumbersAndStreamAsync(stream);
+                    var numbers = greetAndCalculateService.AskNumbers();
+                    foreach (var number in numbers)
+                    {
+                        var request = new AverageRequest() { Number = int.Parse(number) };
+                        await stream.RequestStream.WriteAsync(request);
+                    }
 
                     await stream.RequestStream.CompleteAsync();
                     var response = stream.ResponseAsync;

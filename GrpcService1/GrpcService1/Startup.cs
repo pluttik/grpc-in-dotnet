@@ -15,6 +15,7 @@ namespace GrpcService1
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
+            // https://localhost:5001/
             services.AddGrpc();
             services.AddGrpcHttpApi();
 
@@ -36,6 +37,7 @@ namespace GrpcService1
             app.UseSwagger();
             app.UseSwaggerUI(c =>
             {
+                // https://localhost:5001/swagger/v1/swagger.json
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
             });
 

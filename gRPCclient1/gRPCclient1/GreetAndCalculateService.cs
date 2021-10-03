@@ -37,22 +37,14 @@ namespace GreetAndCalculate
             return serviceChoice;
         }
 
-        public Greeter.GreeterClient StartGreeterClient(GrpcChannel channel, out string name)
-        {
-            var client1 = new Greeter.GreeterClient(channel);
-            Console.Write("Please enter your name: ");
-            name = Console.ReadLine();
-            return client1;
-        }
-
         public CalculationRequest GetCalculationRequest()
         {
             Console.Write("Add (1), subtract (2) or power (3)? ");
-            string answer = Console.ReadLine();
+            string answer = _getUserInput.GetInput();
             Console.Write("First number: ");
-            double firstNumber = double.Parse(Console.ReadLine() ?? string.Empty);
+            double firstNumber = double.Parse(_getUserInput.GetInput() ?? string.Empty);
             Console.Write("Second number: ");
-            double secondNumber = Double.Parse(Console.ReadLine() ?? string.Empty);
+            double secondNumber = double.Parse(_getUserInput.GetInput() ?? string.Empty);
 
             CalculationRequest.Types.CalculationType calculationType = CalculationRequest.Types.CalculationType.Add;
             switch (answer)
@@ -89,18 +81,18 @@ namespace GreetAndCalculate
             return request;
         }
 
-        public async Task AskNumbersAndStreamAsync(AsyncClientStreamingCall<AverageRequest, AverageResponse> stream)
+        public string[] AskNumbers()
         {
             Console.Write("Enter some numbers separated by commas: ");
-            var input = Console.ReadLine();
+            var input = _getUserInput.GetInput();
             string[] numbers = input?.Split(",");
 
-            if (numbers != null)
-                foreach (var number in numbers)
-                {
-                    var request = new AverageRequest() { Number = int.Parse(number) };
-                    await stream.RequestStream.WriteAsync(request);
-                }
+            if (numbers == null)
+            {
+                numbers = Array.Empty<string>();
+            }
+
+            return numbers;
         }
     }
 }
