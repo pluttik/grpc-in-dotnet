@@ -17,7 +17,7 @@ namespace GrpcServiceGreetAndCalculate.Services
         }
 
         // implementation of example of a remote procedure call without streaming
-        public override Task<HelloReply> SayHello(HelloRequest request, ServerCallContext context)
+        public override Task<HelloReply> SayHello(HelloRequest request, ServerCallContext context = default)
         {
             _logger.LogInformation("Said 'Hello' to " + request.Name);
             return Task.FromResult(new HelloReply

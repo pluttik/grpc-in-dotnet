@@ -1,7 +1,5 @@
-using Grpc.Net.Client;
 using Moq;
 using NUnit.Framework;
-using System.Collections.Generic;
 
 namespace GreetAndCalculate.UnitTests
 {
